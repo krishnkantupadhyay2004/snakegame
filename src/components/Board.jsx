@@ -10,6 +10,7 @@ function Board() {
     let [direction, setDirection] = useState("RIGHT");
     let [food, setFood] = useState(150);
     let [snakelength, setSnakelength] = useState(3);
+    let [gamerunning, setGamerunning] = useState(false);
 
     const snakeRef = useRef(snake);
     const directionRef = useRef(direction);
@@ -34,6 +35,7 @@ function Board() {
 
         if (body.includes(head)) {
             alert("Game Over - You hit yourself!");
+            setSnake([0, 1, 2]);
         }
 
     }, [snake]);
@@ -41,6 +43,7 @@ function Board() {
 
 
     useEffect(() => {
+        if (!gamerunning) return;
         let id = setInterval(() => {
 
             let check = checkboundary();
@@ -58,8 +61,12 @@ function Board() {
                     newsnake.push(newsnake[newsnake.length - 1] - 20);
 
                     if (newsnake[newsnake.length - 1] === foodRef.current) {
-                    
-                        setFood(Math.floor(Math.random() * 400));
+
+                        let random = Math.floor(Math.random() * 400);
+                        while (newsnake.includes(random)) {
+                            random = Math.floor(Math.random() * 400);
+                        }
+                        setFood(random);
                     } else {
                         newsnake.shift();
                     }
@@ -70,8 +77,12 @@ function Board() {
                     newsnake.push(newsnake[newsnake.length - 1] + 20);
 
                     if (newsnake[newsnake.length - 1] === foodRef.current) {
-                 
-                        setFood(Math.floor(Math.random() * 400));
+
+                        let random = Math.floor(Math.random() * 400);
+                        while (newsnake.includes(random)) {
+                            random = Math.floor(Math.random() * 400);
+                        }
+                        setFood(random);
                     } else {
                         newsnake.shift();
                     }
@@ -82,7 +93,11 @@ function Board() {
                     newsnake.push(newsnake[newsnake.length - 1] - 1);
 
                     if (newsnake[newsnake.length - 1] === foodRef.current) {
-                        setFood(Math.floor(Math.random() * 400));
+                        let random = Math.floor(Math.random() * 400);
+                        while (newsnake.includes(random)) {
+                            random = Math.floor(Math.random() * 400);
+                        }
+                        setFood(random);
                     } else {
                         newsnake.shift();
                     }
@@ -93,7 +108,11 @@ function Board() {
                     newsnake.push(newsnake[newsnake.length - 1] + 1);
 
                     if (newsnake[newsnake.length - 1] === foodRef.current) {
-                        setFood(Math.floor(Math.random() * 400));
+                        let random = Math.floor(Math.random() * 400);
+                        while (newsnake.includes(random)) {
+                            random = Math.floor(Math.random() * 400);
+                        }
+                        setFood(random);
                     } else {
                         newsnake.shift();
                     }
@@ -108,7 +127,7 @@ function Board() {
 
         }, 200)
         return () => clearInterval(id);
-    }, [])
+    }, [gamerunning]);
 
     useEffect(() => {
         let handlelistner = (event) => {
@@ -136,7 +155,7 @@ function Board() {
 
 
 
-        document.addEventListener("keydown", handlelistner); 
+        document.addEventListener("keydown", handlelistner);
 
         return () => document.removeEventListener("keydown", handlelistner);
     }, [])
@@ -164,26 +183,52 @@ function Board() {
 
     return (
         <>
-            <div className="border-2 border-red-500 mt-10">
-                <div className="border-2 border-white-500 grid grid-cols-20 grid-rows-20 w-[400px] h-[400px] ">
-                    {
-                        boxarray.map((box, index) => {
-                            let issnake = snake.includes(index);
+            <div className="border-2 border-red-500 h-screen flex flex-row justify-center items-center ">
+                <div className="border-2 border-red-500 h-screen flex flex-col justify-center items-center gap-2">
+                    <h2>Snake Game!</h2>
+                    <div className="border-2 border-blue-500  flex flex-row justify-center items-center gap-2">
+                        <div className="border-2 border-white-500 grid grid-cols-20 grid-rows-20 w-[400px] h-[400px] ">
+
+
+                            {
+                                boxarray.map((box, index) => {
+                                    let issnake = snake.includes(index);
 
 
 
-                            return (
-                                <span className={` z-10 w-[20px] h-[20px] ${issnake ? "bg-green-500" : ""} `} key={index}>
-                                    <div className={`${index == food ? "bg-red-500" : " "} z-1 w-[17px] h-[17px] rounded-full`}></div>
-                                </span>
-                            )
-                        })
+                                    return (
+                                        <span className={` z-10 w-[20px] h-[20px] ${issnake ? "bg-green-500" : ""} `} key={index}>
+                                            <div className={`${index == food ? "bg-red-500" : " "} z-1 w-[17px] h-[17px] rounded-full`}></div>
+                                        </span>
+                                    )
+                                })
 
 
 
-                    }
+                            }
 
+                        </div>
+                        <div className="border-2 border-orange-500 w-[300px] h-[300px] flex flex-col items-center justify-evenly gap-1">
+                            <h3>High Score : 00</h3>
+                            <h2>Score : 00</h2>
+                            <h3>Level : 1</h3>
+                            <button onClick={() => setGamerunning(true)} className="border border-white-300 cursor-pointer">Start Game</button>
+                            <button onClick={() => {
+                                setSnake([0, 1, 2]);
+                                setFood(150);
+                                setDirection("RIGHT");
+                                setGamerunning(true);
+                            }} 
+                            className="border border-white-300 cursor-pointer">Restart Game</button>
+                            <button type="submit" className="border border-white-300 cursor-pointer">Pause Game</button>
+
+
+                        </div>
+                    </div>
+
+                    <h2>Controls</h2>
                 </div>
+
             </div>
         </>
     )
