@@ -9,12 +9,21 @@ function Board() {
     let [snake, setSnake] = useState([0, 1, 2]);
     let [direction, setDirection] = useState("RIGHT");
     let [food, setFood] = useState(150);
-    let [snakelength, setSnakelength] = useState(3);
+    let [gameover,setGameover] = useState(false);
     let [gamerunning, setGamerunning] = useState(false);
+    const [score, setScore] = useState(0);
+    const [highScore, setHighscore] = useState(0);
+    const [level, setlevel] = useState(1);
+
 
     const snakeRef = useRef(snake);
     const directionRef = useRef(direction);
     const foodRef = useRef(food);
+    const scoreRef = useRef(score);
+
+    useEffect(() => {
+        scoreRef.current = score;
+    }, [score]);
 
     useEffect(() => {
         foodRef.current = food;
@@ -34,8 +43,13 @@ function Board() {
         let body = snakeRef.current.slice(0, -1); // all except head
 
         if (body.includes(head)) {
-            alert("Game Over - You hit yourself!");
-            setSnake([0, 1, 2]);
+
+            // setSnake([0, 1, 2]);
+            setGameover(true);
+            setGamerunning(false);
+            setScore(0);
+            setlevel(1);
+
         }
 
     }, [snake]);
@@ -48,8 +62,11 @@ function Board() {
 
             let check = checkboundary();
             if (check) {
-                alert("game over");
+                setGameover(true);
                 clearInterval(id);
+                setGamerunning(false);
+                setScore(0);
+                setlevel(1);
                 return;
             }
 
@@ -67,6 +84,21 @@ function Board() {
                             random = Math.floor(Math.random() * 400);
                         }
                         setFood(random);
+                        let newscore;
+                        setScore((score) => {
+                            newscore = score + 10;
+                            setHighscore((hs) => {
+                                if (newscore > hs) {
+                                    return newscore;
+                                } else {
+                                    return hs;
+                                }
+                            })
+                            return newscore;
+                        });
+
+
+
                     } else {
                         newsnake.shift();
                     }
@@ -83,6 +115,25 @@ function Board() {
                             random = Math.floor(Math.random() * 400);
                         }
                         setFood(random);
+                        let newscore;
+                        setScore((score) => {
+                            newscore = score + 10;
+                            setHighscore((hs) => {
+                                if (newscore > hs) {
+                                    return newscore;
+                                } else {
+                                    return hs;
+                                }
+
+                            })
+                            setlevel((level) => {
+                                if (newscore % 50 === 0) {
+                                    return level + 1;
+                                }
+                                return level;
+                            })
+                            return newscore;
+                        });
                     } else {
                         newsnake.shift();
                     }
@@ -98,6 +149,24 @@ function Board() {
                             random = Math.floor(Math.random() * 400);
                         }
                         setFood(random);
+                        let newscore;
+                        setScore((score) => {
+                            newscore = score + 10;
+                            setHighscore((hs) => {
+                                if (newscore > hs) {
+                                    return newscore;
+                                } else {
+                                    return hs;
+                                }
+                            })
+                            setlevel((level) => {
+                                if (newscore % 50 === 0) {
+                                    return level + 1;
+                                }
+                                return level;
+                            })
+                            return newscore;
+                        });
                     } else {
                         newsnake.shift();
                     }
@@ -113,6 +182,24 @@ function Board() {
                             random = Math.floor(Math.random() * 400);
                         }
                         setFood(random);
+                        let newscore;
+                        setScore((score) => {
+                            newscore = score + 10;
+                            setHighscore((hs) => {
+                                if (newscore > hs) {
+                                    return newscore;
+                                } else {
+                                    return hs;
+                                }
+                            })
+                            setlevel((level) => {
+                                if (newscore % 50 === 0) {
+                                    return level + 1;
+                                }
+                                return level;
+                            })
+                            return newscore;
+                        });
                     } else {
                         newsnake.shift();
                     }
@@ -183,11 +270,31 @@ function Board() {
 
     return (
         <>
-            <div className="border-2 border-red-500 h-screen flex flex-row justify-center items-center ">
-                <div className="border-2 border-red-500 h-screen flex flex-col justify-center items-center gap-2">
-                    <h2>Snake Game!</h2>
-                    <div className="border-2 border-blue-500  flex flex-row justify-center items-center gap-2">
-                        <div className="border-2 border-white-500 grid grid-cols-20 grid-rows-20 w-[400px] h-[400px] ">
+            <div className="  flex flex-row justify-center items-center  ">
+                <div className=" w-screen flex flex-col justify-center items-center gap-2">
+                    <h2 className="font-semibold text-[30px]">Snake Game!</h2>
+                     
+                     <h2 className="text-red-500 font-bold text-[20px]">{gameover ? "Game over!" : ""}</h2>
+                    <div className="  flex flex-col sm:flex-row justify-center items-center gap-5 w-full sm:w-[600px]">
+                         <div className="font-semibold   flex flex-col items-center justify-evenly gap-1">
+                            <h3 className="font-semibold">High Score : {highScore}</h3>
+                            <h2>Score : {scoreRef.current}</h2>
+                            <h3>Level : {level}</h3>
+                            <button onClick={() => setGamerunning(!gamerunning)} className="bg-zinc-300 p-1 rounded-xl hover:bg-zinc-400 cursor-pointer">{gamerunning ? "Pause Game" : "Start Game"}</button>
+                            <button onClick={() => {
+                                setSnake([0, 1, 2]);
+                                setFood(150);
+                                setDirection("RIGHT");
+                                setScore(0);
+                                setlevel(1);
+                                setGamerunning(true);
+                            }}
+                                className="bg-zinc-300 p-1 rounded-xl hover:bg-zinc-400 cursor-pointer cursor-pointer">Restart Game</button>
+
+
+
+                        </div>
+                        <div className=" border border-white grid grid-cols-20 grid-rows-20 w-[80vmin] sm:w-[400px] h-[70vmin] sm:h-[400px] ">
 
 
                             {
@@ -197,8 +304,8 @@ function Board() {
 
 
                                     return (
-                                        <span className={` z-10 w-[20px] h-[20px] ${issnake ? "bg-green-500" : ""} `} key={index}>
-                                            <div className={`${index == food ? "bg-red-500" : " "} z-1 w-[17px] h-[17px] rounded-full`}></div>
+                                        <span className={` ${issnake ? "bg-green-500" : ""} `} key={index}>
+                                            <div className={`${index == food ? " bg-red-500 rounded-full" : " "} w-full h-full`}></div>
                                         </span>
                                     )
                                 })
@@ -208,25 +315,10 @@ function Board() {
                             }
 
                         </div>
-                        <div className="border-2 border-orange-500 w-[300px] h-[300px] flex flex-col items-center justify-evenly gap-1">
-                            <h3>High Score : 00</h3>
-                            <h2>Score : 00</h2>
-                            <h3>Level : 1</h3>
-                            <button onClick={() => setGamerunning(true)} className="border border-white-300 cursor-pointer">Start Game</button>
-                            <button onClick={() => {
-                                setSnake([0, 1, 2]);
-                                setFood(150);
-                                setDirection("RIGHT");
-                                setGamerunning(true);
-                            }} 
-                            className="border border-white-300 cursor-pointer">Restart Game</button>
-                            <button type="submit" className="border border-white-300 cursor-pointer">Pause Game</button>
-
-
-                        </div>
+                       
                     </div>
 
-                    <h2>Controls</h2>
+                    <h2 className="hidden sm:block">Controls</h2>
                 </div>
 
             </div>

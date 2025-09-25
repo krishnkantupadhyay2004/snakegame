@@ -8,4 +8,6 @@ body{
   background-color: rgb(49, 43, 43);
   color:white;
   font-family: 'Courier New', Courier, monospace;
+  overflow:scroll;
+  
 }
