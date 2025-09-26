@@ -44,7 +44,7 @@ function Board() {
 
         if (body.includes(head)) {
 
-            // setSnake([0, 1, 2]);
+            setSnake([0, 1, 2]);
             setGameover(true);
             setGamerunning(false);
             setScore(0);
